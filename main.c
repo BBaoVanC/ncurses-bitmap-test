@@ -35,7 +35,7 @@ static void draw(const size_t size) {
     const double radius_end = bottom_radius;
 
     const double transition_begin_y = top_radius;
-    const double transition_end_y = size - top_radius - bottom_radius;
+    const double transition_end_y = size - bottom_radius;
     // difference in radii
     const double transition_radius_diff = radius_end - radius_start;
     // TODO: if size < 128, this might overwrite the same line multiple times, but who cares
@@ -51,7 +51,7 @@ static void draw(const size_t size) {
 
         const double x_start = center_x - radius;
         const double x_end = center_x + radius;
-        for (size_t x = x_start; x < x_end; x++) {
+        for (size_t x = x_start + 1; x < x_end; x++) {
             set_pixel(x, y, true);
         }
     }
@@ -59,7 +59,7 @@ static void draw(const size_t size) {
     // BOTTOM CIRCLE
     for (size_t y = transition_end_y; y < size; y++) {
         // TODO: rename? this is local not global
-        const double center_y = size - bottom_radius;
+        const double center_y = size - bottom_radius - 1;
         for (size_t x = 0; x < size; x++) {
             if (((x - center_x) * (x - center_x)) + ((y - center_y) * (y - center_y)) <= (bottom_radius * bottom_radius)) {
                 set_pixel(x, y, true);
@@ -77,7 +77,7 @@ int main() {
     init_pair(0, COLOR_WHITE, COLOR_BLACK);
     init_pair(1, COLOR_BLACK, COLOR_WHITE);
 
-    static const size_t max = 128;
+    static const size_t max = 32;
     int ch;
     while (TRUE) {
         erase();

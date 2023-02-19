@@ -4,4 +4,7 @@ main: main.c
 run: main
 	./main
 
-.PHONY: run
+clean:
+	rm -f main
+
+.PHONY: run clean
