@@ -1,12 +1,15 @@
 #include <ncurses.h>
 #include <stdint.h>
 
-static void set_pixel(const uint32_t x, const size_t y, const bool color) {
-    attron(COLOR_PAIR(color));
+static void set_pixel(const uint32_t x, const size_t y) {
+    attron(COLOR_PAIR(1));
     mvprintw(y, x * 2, "a ");
-    attroff(COLOR_PAIR(color));
+    attroff(COLOR_PAIR(1));
 }
 // TODO: check for off-by-one errors
+// also: do you really trust my floating point comparisons? or is it just magic?
+//
+// remember: x and y positions in here are real native coordinates on display
 static void draw(const uint32_t size) {
     // top_radius/size = 8/128
     // This allows it to be scaled to any `size`,
@@ -25,7 +28,7 @@ static void draw(const uint32_t size) {
         for (uint32_t x = 0; x < size; x++) {
             // circle
             if (((x - center_x) * (x - center_x)) + ((y - center_y) * (y - center_y)) <= (top_radius * top_radius)) {
-                set_pixel(x, y, true);
+                set_pixel(x, y);
             }
         }
     }
@@ -52,7 +55,7 @@ static void draw(const uint32_t size) {
         const double x_start = center_x - radius;
         const double x_end = center_x + radius;
         for (uint32_t x = x_start + 1; x < x_end; x++) {
-            set_pixel(x, y, true);
+            set_pixel(x, y);
         }
     }
 
@@ -62,12 +65,10 @@ static void draw(const uint32_t size) {
         const double center_y = size - bottom_radius - 1;
         for (uint32_t x = 0; x < size; x++) {
             if (((x - center_x) * (x - center_x)) + ((y - center_y) * (y - center_y)) <= (bottom_radius * bottom_radius)) {
-                set_pixel(x, y, true);
+                set_pixel(x, y);
             }
         }
     }
-
-    return;
 }
 int main() {
     initscr();
