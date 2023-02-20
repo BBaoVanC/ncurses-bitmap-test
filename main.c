@@ -6,6 +6,11 @@ static void set_pixel(const uint32_t x, const size_t y) {
     mvprintw(y, x * 2, "a ");
     attroff(COLOR_PAIR(1));
 }
+static void set_pixel_off(const uint32_t x, const size_t y) {
+    attron(COLOR_PAIR(0));
+    mvprintw(y, x * 2, "a ");
+    attroff(COLOR_PAIR(0));
+}
 // TODO: check for off-by-one errors
 // also: do you really trust my floating point comparisons? or is it just magic?
 //
@@ -54,7 +59,7 @@ static void draw(const uint32_t size) {
 
         const double x_start = center_x - radius;
         const double x_end = center_x + radius;
-        for (uint32_t x = x_start + 1; x < x_end; x++) {
+        for (uint32_t x = x_start + 1; x < x_end; x++) { // TODO: why does this need to be + 1, probably because < instead of <=? since otherwise off by one on left side only
             set_pixel(x, y);
         }
     }
@@ -62,7 +67,7 @@ static void draw(const uint32_t size) {
     // BOTTOM CIRCLE
     for (uint32_t y = transition_end_y; y < size; y++) {
         // TODO: rename? this is local not global
-        const double center_y = size - bottom_radius - 1;
+        const double center_y = size - bottom_radius;
         for (uint32_t x = 0; x < size; x++) {
             if (((x - center_x) * (x - center_x)) + ((y - center_y) * (y - center_y)) <= (bottom_radius * bottom_radius)) {
                 set_pixel(x, y);
@@ -78,7 +83,7 @@ int main() {
     init_pair(0, COLOR_WHITE, COLOR_BLACK);
     init_pair(1, COLOR_BLACK, COLOR_WHITE);
 
-    static const uint32_t max = 32;
+    static const uint32_t max = 128;
     int ch;
     while (TRUE) {
         erase();
