@@ -83,18 +83,29 @@ int main() {
     init_pair(0, COLOR_WHITE, COLOR_BLACK);
     init_pair(1, COLOR_BLACK, COLOR_WHITE);
 
-    static const uint32_t max = 128;
+    uint32_t max = 64;
     int ch;
     while (TRUE) {
         erase();
         draw(max);
+        mvprintw(0, 0, "%i", max);
         refresh();
         ch = getch();
-        if (ch == KEY_RESIZE) {
-            continue;
+        switch (ch) {
+            case KEY_RESIZE:
+                break; // don't do anything
+            case '=':
+            case '+':
+                max++;
+                break;
+            case '-':
+                max--;
+                break;
+            default:
+                goto end;
         }
-        break;
     }
+end:
     endwin();
 
     return 0;
